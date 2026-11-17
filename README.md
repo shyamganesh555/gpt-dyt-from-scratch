@@ -1,4 +1,3 @@
-markdown
 # Character-Level GPT with Dynamic Tanh (DyT)
 
 A complete PyTorch implementation of a decoder-only Transformer language model trained from scratch at the character level on William Shakespeare's *A Midsummer Night's Dream*. Instead of relying on traditional Layer Normalization (`LayerNorm`), this project replaces every normalization layer with **Dynamic Tanh (`Dynamic_Tanh`)**, demonstrating that learnable bounded non-linearities can stabilize Transformer training without computing batch or layer statistics.
