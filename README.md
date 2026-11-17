@@ -8,8 +8,11 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 • Core Objective: Builds a Generative Pre-trained Transformer (GPT) from scratch using pure PyTorch tensor operations, avoiding high-level Transformer wrappers.
 
 • Andrej Karpathy (nanoGPT): Adopts the character-level tokenization pipeline, batch sampling mechanism (get_batch), residual block layout, and autoregressive multinomial generation loop from Karpathy's "Let's build GPT: from scratch, in code, spelled out".
+
 • Attention Is All You Need (Vaswani et al., 2017): Implements scaled dot-product multi-head self-attention, causal lower-triangular masking, and position-wise feed-forward networks from the original Transformer architecture.
+
 • Transformers without Normalization (Zhu et al., 2025): Replaces standard LayerNorm modules with Dynamic Tanh (Dynamic_Tanh), defined as \(y = \gamma \cdot \tanh(\alpha x) + \beta\), where α is a learnable scalar parameter that dynamically scales input activations before applying the smooth hyperbolic tangent curve.
+
 • Backpropagation (Rumelhart, Hinton, & Williams, 1986): Trains all embedding tables, attention projections, feed-forward weights, and dynamic scaling parameters end-to-end via automatic differentiation and gradient descent.
 
 2. Detailed Model Architecture
@@ -17,20 +20,25 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 • Character-Level Tokenization:
 	• Scans the raw text corpus to extract all unique characters, forming a sorted vocabulary of 75 tokens (vocab_size = 75).
 	• Maps characters to integer indices (stoi) and reverses indices back to characters (itos) using lookup dictionaries.
+
 • Input Embedding Layer:
 	• Token Embeddings: Maps input token indices of shape (B, T) into dense vectors of size n_embd = 256 using nn.Embedding(75, 256).
 	• Positional Embeddings: Encodes token positions 0 to T - 1 using a learned embedding table nn.Embedding(256, 256) and adds them element-wise to the token embeddings.
+
 • Dynamic Tanh Module (Dynamic_Tanh):
 	• Replaces LayerNorm before the self-attention sub-layer (dyt1), before the feed-forward sub-layer (dyt2), and at the final output projection (final_norm).
 	• Initializes a learnable scalar alpha to 0.5, an element-wise learnable scale vector weight to ones, and an optional shift vector bias to zeros.
+
 • Causal Multi-Head Self-Attention (MultiheadAttention):
 	• Projects normalized inputs into combined Query, Key, and Value tensors using a single bias-free linear layer (nn.Linear(256, 768, bias=False)).
 	• Splits and reshapes the projections across 4 parallel attention heads, each operating on a head_size of 64 (256 // 4).
 	• Computes scaled attention scores \((Q K^T) / \sqrt{64}\) and applies a lower-triangular causal mask (torch.tril) filled with -inf to prevent tokens from attending to future positions.
 	• Applies softmax, 0.5 dropout regularization, value aggregation, head concatenation, and a final output projection (nn.Linear(256, 256)).
+
 • Position-Wise Feed-Forward Network (FeedForward):
 	• Expands representations from 256 to 1,024 dimensions (4 * n_embd) via a linear layer.
 	• Applies a non-linear GELU activation function and projects back down to 256 dimensions.
+
 • Transformer Decoder Stack & Language Modeling Head:
 	• Stacks 4 sequential Block modules connected via residual skip connections (x = x + Sublayer(x)).
 	• Passes the final block output through final_norm (Dynamic_Tanh) and projects logits across all 75 vocabulary characters via lm_head (nn.Linear(256, 75)).
@@ -50,12 +58,15 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 4. Dataset & Preprocessing
 
 • Source Text: Downloads the Folger Shakespeare Library edition of A Midsummer Night's Dream (a-midsummer-nights-dream_TXT_FolgerShakespeare.txt, 100,554 bytes) directly from GitHub.
+
 • Train / Validation Split: Encodes the entire text into a 1D torch.long tensor and splits it sequentially into 90% training data and 10% validation data.
+
 • Batch Sampling (get_batch): Randomly samples 64 starting offsets per batch, slicing input windows x of length 256 and target windows y shifted right by one character (i+1 to i+block_size+1).
 
 5. Training Results & Convergence
 
 • Loss Evaluation Protocol (estimate_loss): Every 100 steps, the model switches to .eval() mode with @torch.no_grad() and averages cross-entropy loss across 50 random batches from both splits.
+
 • Progression Across Training Steps:
 	• Step 0 (Initialization): Train Loss 4.3738 | Validation Loss 4.3769 (matches theoretical uniform random guess \(-\ln(1/75) \approx 4.3175\)).
 	• Step 100: Train Loss 2.5920 | Validation Loss 2.6822
@@ -65,6 +76,7 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 	• Step 2,000: Train Loss 1.5733 | Validation Loss 1.7066
 	• Step 2,500: Train Loss 1.4360 | Validation Loss 1.6459
 	• Step 2,999 (Final): Train Loss 1.3068 | Validation Loss 1.6353
+
 • Visualization: Logs evaluation metrics into lists and generates a high-resolution training vs. validation loss curve using matplotlib.
 
 6. Autoregressive Text Generation
@@ -73,8 +85,10 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 	• Crops the conditioning context to the last block_size (256) tokens on every step.
 	• Extracts logits from the final time step (logits[:, -1, :]), converts them into probabilities via F.softmax, and samples the next character index using torch.multinomial.
 	• Appends the newly predicted token to the running sequence and repeats for 500 iterations.
+
 • Qualitative Output Sample:
 	• Even without normalization layers or subword tokenization, the model learns theatrical script layout, uppercase speaker cues, bracketed stage directions, punctuation, and Early Modern English rhythm:
+
 [Quin a not, oncry.]
 Dever and in the Duch.
 [He exit.]
