@@ -113,7 +113,10 @@ you truest a Thisbe's fure day man blood
 
 8. References
 
-1. Karpathy, A. (2023). Let's build GPT: from scratch, in code, spelled out (nanoGPT).
-2. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention Is All You Need. Advances in Neural Information Processing Systems (NeurIPS).
-3. Zhu, J., Chen, X., He, K., LeCun, Y., & Liu, Z. (2025). Transformers without Normalization.
-4. Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986). Learning representations by back-propagating errors. Nature, 323(6088), 533–536.
+	1. Karpathy, A. (2023). Let's build GPT: from scratch, in code, spelled out (nanoGPT).
+	
+	2. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention Is All You Need. Advances in 	Neural Information Processing Systems (NeurIPS).
+	
+	3. Zhu, J., Chen, X., He, K., LeCun, Y., & Liu, Z. (2025). Transformers without Normalization.
+	
+	4. Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986). Learning representations by back-propagating errors. Nature, 323(6088), 533–536.
