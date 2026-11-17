@@ -6,6 +6,7 @@ A complete PyTorch implementation of a decoder-only Transformer language model t
 1. Overview and Research Foundation
 
 • Core Objective: Builds a Generative Pre-trained Transformer (GPT) from scratch using pure PyTorch tensor operations, avoiding high-level Transformer wrappers.
+
 • Andrej Karpathy (nanoGPT): Adopts the character-level tokenization pipeline, batch sampling mechanism (get_batch), residual block layout, and autoregressive multinomial generation loop from Karpathy's "Let's build GPT: from scratch, in code, spelled out".
 • Attention Is All You Need (Vaswani et al., 2017): Implements scaled dot-product multi-head self-attention, causal lower-triangular masking, and position-wise feed-forward networks from the original Transformer architecture.
 • Transformers without Normalization (Zhu et al., 2025): Replaces standard LayerNorm modules with Dynamic Tanh (Dynamic_Tanh), defined as \(y = \gamma \cdot \tanh(\alpha x) + \beta\), where α is a learnable scalar parameter that dynamically scales input activations before applying the smooth hyperbolic tangent curve.
